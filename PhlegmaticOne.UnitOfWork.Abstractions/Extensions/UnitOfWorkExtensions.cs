@@ -1,7 +1,6 @@
 ﻿using PhlegmaticOne.OperationResults;
-using PhlegmaticOne.UnitOfWork.Interfaces;
 
-namespace PhlegmaticOne.UnitOfWork.Extensions;
+namespace PhlegmaticOne.UnitOfWork.Abstractions.Extensions;
 
 public static class UnitOfWorkExtensions
 {

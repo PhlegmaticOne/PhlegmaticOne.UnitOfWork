@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using PhlegmaticOne.PagedLists.Extensions;
-using PhlegmaticOne.PagedLists.Implementation;
-using PhlegmaticOne.UnitOfWork.Interfaces;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using PhlegmaticOne.DomainDefinitions;
+using PhlegmaticOne.PagedLists;
+using PhlegmaticOne.PagedLists.Extensions;
+using PhlegmaticOne.UnitOfWork.Abstractions;
+using PhlegmaticOne.UnitOfWork.Abstractions.Builders;
+using PhlegmaticOne.UnitOfWork.Implementation.Builders;
 
-namespace PhlegmaticOne.UnitOfWork.Implementation;
+namespace PhlegmaticOne.UnitOfWork.Implementation.Implementation;
 
 public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Entity
 {
@@ -15,7 +16,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
     public DbSetRepository(DbSet<TEntity> dbSet) => _set = dbSet;
 
     public async Task<TEntity> CreateAsync(
-        TEntity entity, 
+        TEntity entity,
         CancellationToken cancellationToken = default)
     {
         var result = await _set.AddAsync(entity, cancellationToken);
@@ -45,7 +46,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
         return true;
     }
 
-    public Task<bool> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default) => 
+    public Task<bool> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default) =>
         DeleteAsync(entity.Id, cancellationToken);
 
     public async Task<bool> DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
@@ -100,7 +101,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
     public Task<TEntity?> GetByIdOrDefaultAsync(Guid id,
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null, 
         bool disableTracking = true,
         CancellationToken cancellationToken = default)
     {
@@ -108,7 +109,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
         if (disableTracking) query = query.AsNoTracking();
 
-        if (include is not null) {query = include(query);}
+        if (include is not null)  query = Include(query, include); 
 
         if (predicate is not null) query = query.Where(predicate);
 
@@ -118,7 +119,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
     public async Task<TResult?> GetByIdOrDefaultAsync<TResult>(Guid id,
         Expression<Func<TEntity, TResult>> selector,
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default)
     {
@@ -126,7 +127,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
         if (disableTracking) query = query.AsNoTracking();
 
-        if (include is not null) query = include(query);
+        if (include is not null) query = Include(query, include);
 
         if (predicate is not null) query = query.Where(predicate);
 
@@ -138,7 +139,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
         Expression<Func<TEntity, TResult>> selector,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default)
     {
@@ -146,7 +147,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
         if (disableTracking) query = query.AsNoTracking();
 
-        if (include is not null) query = include(query);
+        if (include is not null) query = Include(query, include);
 
         if (predicate is not null) query = query.Where(predicate);
 
@@ -158,7 +159,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
     public async Task<IList<TEntity>> GetAllAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default)
     {
@@ -166,7 +167,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
         if (disableTracking) query = query.AsNoTracking();
 
-        if (include is not null) query = include(query);
+        if (include is not null) query = Include(query, include);
 
         if (predicate is not null) query = query.Where(predicate);
 
@@ -178,7 +179,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
     public Task<PagedList<TEntity>> GetPagedListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         int pageIndex = 0,
         int pageSize = 20,
@@ -188,7 +189,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
         if (disableTracking) query = query.AsNoTracking();
 
-        if (include is not null) query = include(query);
+        if (include is not null) query = Include(query, include);
 
         if (predicate is not null) query = query.Where(predicate);
 
@@ -201,8 +202,8 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
         Expression<Func<TEntity, TResult>> selector,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
-        bool disableTracking = true, 
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
+        bool disableTracking = true,
         int pageIndex = 0,
         int pageSize = 20,
         CancellationToken cancellationToken = default)
@@ -211,7 +212,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
         if (disableTracking) query = query.AsNoTracking();
 
-        if (include is not null) query = include(query);
+        if (include is not null) query = Include(query, include);
 
         if (predicate is not null) query = query.Where(predicate);
 
@@ -222,7 +223,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
     public Task<TEntity?> GetFirstOrDefaultAsync(
         Expression<Func<TEntity, bool>> predicate,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default)
     {
@@ -230,7 +231,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
         if (disableTracking) query = query.AsNoTracking();
 
-        if (include is not null) query = include(query);
+        if (include is not null) query = Include(query, include);
 
         return query.FirstOrDefaultAsync(predicate, cancellationToken);
     }
@@ -238,7 +239,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
     public async Task<TResult?> GetFirstOrDefaultAsync<TResult>(
         Expression<Func<TEntity, TResult>> selector,
         Expression<Func<TEntity, bool>> predicate,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default)
     {
@@ -246,7 +247,7 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
 
         if (disableTracking) query = query.AsNoTracking();
 
-        if (include is not null) query = include(query);
+        if (include is not null) query = Include(query, include);
 
         return await query.Where(predicate).Select(selector).FirstOrDefaultAsync(cancellationToken);
     }
@@ -292,4 +293,17 @@ public class DbSetRepository<TEntity> : IRepository<TEntity> where TEntity : Ent
         predicate is null
             ? _set.SumAsync(selector, cancellationToken)
             : _set.Where(predicate).SumAsync(selector, cancellationToken);
+
+    private IQueryable<TEntity> Include(IQueryable<TEntity> queryable,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null)
+    {
+        if (include is null)
+        {
+            return queryable;
+        }
+
+        var includeQueryBuilder = new IncludeQueryBuilder<TEntity>(queryable);
+        return include(includeQueryBuilder);
+    }
 }
+

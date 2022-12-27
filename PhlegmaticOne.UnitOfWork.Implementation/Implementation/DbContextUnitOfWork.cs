@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PhlegmaticOne.DomainDefinitions;
-using PhlegmaticOne.UnitOfWork.Interfaces;
+using PhlegmaticOne.UnitOfWork.Abstractions;
 
-namespace PhlegmaticOne.UnitOfWork.Implementation;
+namespace PhlegmaticOne.UnitOfWork.Implementation.Implementation;
 
 public class DbContextUnitOfWork : IUnitOfWork
 {
@@ -16,7 +16,7 @@ public class DbContextUnitOfWork : IUnitOfWork
         _customRepositories = customRepositories.ToDictionary(x => x.GetType(), x => x);
     }
 
-    public TRepository GetCustomRepository<TRepository>() where TRepository : IRepository => 
+    public TRepository GetCustomRepository<TRepository>() where TRepository : IRepository =>
         (TRepository)_customRepositories[typeof(TRepository)];
 
     public IRepository<TEntity> GetRepository<TEntity>() where TEntity : Entity

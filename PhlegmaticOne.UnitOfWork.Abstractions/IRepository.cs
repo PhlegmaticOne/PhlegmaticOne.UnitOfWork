@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-using PhlegmaticOne.PagedLists.Implementation;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using PhlegmaticOne.DomainDefinitions;
+using PhlegmaticOne.PagedLists;
+using PhlegmaticOne.UnitOfWork.Abstractions.Builders;
 
-namespace PhlegmaticOne.UnitOfWork.Interfaces;
+namespace PhlegmaticOne.UnitOfWork.Abstractions;
 
 public interface IRepository { }
 
@@ -11,7 +11,7 @@ public interface IRepository<TEntity> : IRepository where TEntity : Entity
 {
     Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-    Task<IList<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entity, 
+    Task<IList<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entity,
         CancellationToken cancellationToken = default);
 
 
@@ -29,7 +29,7 @@ public interface IRepository<TEntity> : IRepository where TEntity : Entity
         Action<TEntity> actionOverExistingEntity,
         CancellationToken cancellationToken = default);
 
-    Task<TEntity?> UpdateAsync(Guid entityId, 
+    Task<TEntity?> UpdateAsync(Guid entityId,
         Action<TEntity> actionOverExistingEntity,
         CancellationToken cancellationToken = default);
 
@@ -40,14 +40,14 @@ public interface IRepository<TEntity> : IRepository where TEntity : Entity
 
     Task<TEntity?> GetByIdOrDefaultAsync(Guid id,
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default);
 
     Task<TResult?> GetByIdOrDefaultAsync<TResult>(Guid id,
         Expression<Func<TEntity, TResult>> selector,
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default);
 
@@ -55,21 +55,21 @@ public interface IRepository<TEntity> : IRepository where TEntity : Entity
         Expression<Func<TEntity, TResult>> selector,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default);
 
     Task<IList<TEntity>> GetAllAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default);
 
     Task<PagedList<TEntity>> GetPagedListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         int pageIndex = 0,
         int pageSize = 20,
@@ -79,7 +79,7 @@ public interface IRepository<TEntity> : IRepository where TEntity : Entity
         Expression<Func<TEntity, TResult>> selector,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         int pageIndex = 0,
         int pageSize = 20,
@@ -87,14 +87,14 @@ public interface IRepository<TEntity> : IRepository where TEntity : Entity
 
     Task<TEntity?> GetFirstOrDefaultAsync(
         Expression<Func<TEntity, bool>> predicate,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default);
 
     Task<TResult?> GetFirstOrDefaultAsync<TResult>(
         Expression<Func<TEntity, TResult>> selector,
         Expression<Func<TEntity, bool>> predicate,
-        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        Func<IIncludeQueryBuilder<TEntity>, IQueryable<TEntity>>? include = null,
         bool disableTracking = true,
         CancellationToken cancellationToken = default);
 

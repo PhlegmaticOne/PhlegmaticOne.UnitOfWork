@@ -1,17 +1,14 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using PhlegmaticOne.UnitOfWork.Interfaces;
+using PhlegmaticOne.UnitOfWork.Abstractions;
 
-namespace PhlegmaticOne.UnitOfWork.Extensions;
+namespace PhlegmaticOne.UnitOfWork.Implementation.Extensions;
 
 public class UnitOfWorkBuilder
 {
     private readonly IServiceCollection _serviceCollection;
 
-    public UnitOfWorkBuilder(IServiceCollection serviceCollection)
-    {
-        _serviceCollection = serviceCollection;
-    }
+    public UnitOfWorkBuilder(IServiceCollection serviceCollection) => _serviceCollection = serviceCollection;
 
     public void AddCustomRepositoriesFromAssembly(Assembly assembly)
     {

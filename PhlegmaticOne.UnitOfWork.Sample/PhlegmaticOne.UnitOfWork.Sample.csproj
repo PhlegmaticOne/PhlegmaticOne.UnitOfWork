@@ -9,10 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
+    <PackageReference Include="PhlegmaticOne.DomainDefinitions" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PhlegmaticOne.UnitOfWork\PhlegmaticOne.UnitOfWork.csproj" />
+    <ProjectReference Include="..\PhlegmaticOne.UnitOfWork.Abstractions\PhlegmaticOne.UnitOfWork.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

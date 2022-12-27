@@ -1,6 +1,6 @@
 ﻿using PhlegmaticOne.DomainDefinitions;
 
-namespace PhlegmaticOne.UnitOfWork.Interfaces;
+namespace PhlegmaticOne.UnitOfWork.Abstractions;
 
 public interface IUnitOfWork
 {

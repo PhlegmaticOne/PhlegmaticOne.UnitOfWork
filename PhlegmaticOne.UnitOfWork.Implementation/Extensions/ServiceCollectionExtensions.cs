@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PhlegmaticOne.UnitOfWork.Implementation;
-using PhlegmaticOne.UnitOfWork.Interfaces;
+using PhlegmaticOne.UnitOfWork.Abstractions;
+using PhlegmaticOne.UnitOfWork.Implementation.Implementation;
 
-namespace PhlegmaticOne.UnitOfWork.Extensions;
+namespace PhlegmaticOne.UnitOfWork.Implementation.Extensions;
 
 public static class ServiceCollectionExtensions
 {
