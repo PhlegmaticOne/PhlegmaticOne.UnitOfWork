@@ -7,14 +7,20 @@ namespace PhlegmaticOne.UnitOfWork.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddUnitOfWork<TContext>(this IServiceCollection serviceCollection)
-        where TContext : DbContext
+    public static IServiceCollection AddUnitOfWork<TContext>(this IServiceCollection serviceCollection,
+        Action<UnitOfWorkBuilder>? actionBuilder = null) where TContext : DbContext
     {
-        serviceCollection.AddScoped<IUnitOfWork>(x =>
+        if (actionBuilder is not null)
+        {
+            var builder = new UnitOfWorkBuilder(serviceCollection);
+            actionBuilder(builder);
+        }
+
+        return serviceCollection.AddScoped<IUnitOfWork>(x =>
         {
             var dbContext = x.GetRequiredService<TContext>();
-            return new DbContextUnitOfWork(dbContext);
+            var customRepositories = x.GetRequiredService<IEnumerable<IRepository>>();
+            return new DbContextUnitOfWork(dbContext, customRepositories);
         });
-        return serviceCollection;
     }
 }

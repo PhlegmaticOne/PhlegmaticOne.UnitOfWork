@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PhlegmaticOne.DomainDefinitions;
 using PhlegmaticOne.UnitOfWork.Interfaces;
-using PhlegmaticOne.UnitOfWork.Models;
 
 namespace PhlegmaticOne.UnitOfWork.Implementation;
 
@@ -8,14 +8,18 @@ public class DbContextUnitOfWork : IUnitOfWork
 {
     private readonly DbContext _dbContext;
     private readonly Dictionary<Type, IRepository> _repositories;
-
-    public DbContextUnitOfWork(DbContext dbContext)
+    private readonly Dictionary<Type, IRepository> _customRepositories;
+    public DbContextUnitOfWork(DbContext dbContext, IEnumerable<IRepository> customRepositories)
     {
         _repositories = new Dictionary<Type, IRepository>();
         _dbContext = dbContext;
+        _customRepositories = customRepositories.ToDictionary(x => x.GetType(), x => x);
     }
 
-    public IRepository<TEntity> GetRepository<TEntity>() where TEntity : EntityBase
+    public TRepository GetCustomRepository<TRepository>() where TRepository : IRepository => 
+        (TRepository)_customRepositories[typeof(TRepository)];
+
+    public IRepository<TEntity> GetRepository<TEntity>() where TEntity : Entity
     {
         var type = typeof(TEntity);
 
@@ -28,8 +32,5 @@ public class DbContextUnitOfWork : IUnitOfWork
         return (IRepository<TEntity>)_repositories[type];
     }
 
-    public Task<int> SaveChangesAsync()
-    {
-        return _dbContext.SaveChangesAsync();
-    }
+    public Task<int> SaveChangesAsync() => _dbContext.SaveChangesAsync();
 }

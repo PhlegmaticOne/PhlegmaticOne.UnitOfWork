@@ -1,9 +1,10 @@
-﻿using PhlegmaticOne.UnitOfWork.Models;
+﻿using PhlegmaticOne.DomainDefinitions;
 
 namespace PhlegmaticOne.UnitOfWork.Interfaces;
 
 public interface IUnitOfWork
 {
-    IRepository<TEntity> GetRepository<TEntity>() where TEntity : EntityBase;
+    TRepository GetCustomRepository<TRepository>() where TRepository : IRepository;
+    IRepository<TEntity> GetRepository<TEntity>() where TEntity : Entity;
     Task<int> SaveChangesAsync();
 }

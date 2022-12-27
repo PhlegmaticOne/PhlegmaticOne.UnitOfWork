@@ -1,15 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>UnitOfWork</Title>
+    <Description>UnitOfWork implementation</Description>
+    <PackageProjectUrl>https://github.com/PhlegmaticOne/PhlegmaticOne.UnitOfWork</PackageProjectUrl>
+    <PackageIcon>Logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/PhlegmaticOne/PhlegmaticOne.UnitOfWork</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>UnitOfWork</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>1.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Downloads\Logo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-    <PackageReference Include="PhlegmaticOne.OperationResults" Version="1.0.0" />
+    <PackageReference Include="PhlegmaticOne.DomainDefinitions" Version="1.0.0" />
+    <PackageReference Include="PhlegmaticOne.OperationResults" Version="1.0.1" />
     <PackageReference Include="PhlegmaticOne.PagedLists" Version="1.0.0" />
   </ItemGroup>
 
