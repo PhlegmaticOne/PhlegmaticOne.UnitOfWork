@@ -13,6 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>UnitOfWork</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,8 +26,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="PhlegmaticOne.PagedLists.Extensions" Version="1.0.0" />
-    <PackageReference Include="PhlegmaticOne.UnitOfWork.Abstractions" Version="1.2.2" />
+    <PackageReference Include="PhlegmaticOne.UnitOfWork.Abstractions" Version="1.2.3" />
   </ItemGroup>
 
 </Project>

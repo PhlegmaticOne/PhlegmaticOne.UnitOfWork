@@ -1,4 +1,4 @@
-﻿using PhlegmaticOne.DomainDefinitions;
+﻿using PhlegmaticOne.DomainDefinitions.Objects;
 
 namespace PhlegmaticOne.UnitOfWork.Abstractions;
 
@@ -6,5 +6,5 @@ public interface IUnitOfWork
 {
     TRepository GetCustomRepository<TRepository>() where TRepository : IRepository;
     IRepository<TEntity> GetRepository<TEntity>() where TEntity : Entity;
-    Task<int> SaveChangesAsync();
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

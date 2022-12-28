@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using PhlegmaticOne.DomainDefinitions;
+using PhlegmaticOne.DomainDefinitions.Objects;
 using PhlegmaticOne.PagedLists;
 using PhlegmaticOne.PagedLists.Extensions;
 using PhlegmaticOne.UnitOfWork.Abstractions;

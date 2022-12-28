@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using PhlegmaticOne.UnitOfWork.Abstractions;
 using PhlegmaticOne.UnitOfWork.Implementation.Implementation;
+using PhlegmaticOne.UnitOfWork.Implementation.Interceptors.Base;
 
 namespace PhlegmaticOne.UnitOfWork.Implementation.Extensions;
 
@@ -20,7 +21,8 @@ public static class ServiceCollectionExtensions
         {
             var dbContext = x.GetRequiredService<TContext>();
             var customRepositories = x.GetRequiredService<IEnumerable<IRepository>>();
-            return new DbContextUnitOfWork(dbContext, customRepositories);
+            var interceptors = x.GetRequiredService<IEnumerable<IUnitOfWorkInterceptor>>();
+            return new DbContextUnitOfWork(dbContext, customRepositories, interceptors);
         });
     }
 }

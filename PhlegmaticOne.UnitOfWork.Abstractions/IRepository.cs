@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using PhlegmaticOne.DomainDefinitions;
+using PhlegmaticOne.DomainDefinitions.Objects;
 using PhlegmaticOne.PagedLists;
 using PhlegmaticOne.UnitOfWork.Abstractions.Builders;
 
