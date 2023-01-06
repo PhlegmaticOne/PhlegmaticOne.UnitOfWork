@@ -13,7 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>UnitOfWork</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.2.3</Version>
+    <Version>1.3.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="PhlegmaticOne.DomainDefinitions" Version="1.0.2" />
-    <PackageReference Include="PhlegmaticOne.OperationResults" Version="1.0.1" />
+    <PackageReference Include="PhlegmaticOne.DomainDefinitions" Version="1.0.3" />
+    <PackageReference Include="PhlegmaticOne.OperationResults" Version="2.0.2" />
     <PackageReference Include="PhlegmaticOne.PagedLists" Version="1.0.1" />
   </ItemGroup>
 

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using PhlegmaticOne.UnitOfWork.Abstractions;
+using PhlegmaticOne.UnitOfWork.Implementation.Interceptors.Auditable;
 using PhlegmaticOne.UnitOfWork.Implementation.Interceptors.Base;
 using PhlegmaticOne.UnitOfWork.Implementation.Interceptors.Outbox;
 using PhlegmaticOne.UnitOfWork.Implementation.Outbox;
@@ -55,6 +56,11 @@ public class UnitOfWorkBuilder
     {
         AddOutboxMessagesInterceptor<OutboxMessage>()
             .UsingDomainEventsToOutboxMessageConverter<DefaultOutboxMessagesConverter>();
+    }
+
+    public void AddAuditableInterceptor()
+    {
+        _serviceCollection.AddScoped<IUnitOfWorkInterceptor, AuditableUnitOfWorkInterceptor>();
     }
 }
 

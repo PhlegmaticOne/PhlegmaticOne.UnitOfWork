@@ -4,33 +4,33 @@ namespace PhlegmaticOne.UnitOfWork.Abstractions.Extensions;
 
 public static class UnitOfWorkExtensions
 {
-    public static async Task<OperationResult<T>> ResultFromExecutionInTransaction<T>(
+    public static async Task<DomainResult<T>> ResultFromExecutionInTransaction<T>(
         this IUnitOfWork unitOfWork, Func<Task<T>> operation)
     {
         try
         {
             var result = await operation();
             await unitOfWork.SaveChangesAsync();
-            return OperationResult.Successful(result);
+            return DomainResult.Success(result);
         }
         catch (Exception e)
         {
-            return OperationResult.Failed<T>(e.Message);
+            return DomainResult.Failure<T>(new("Exception.Error", e.Message));
         }
     }
 
-    public static async Task<OperationResult> ResultFromExecutionInTransaction(
+    public static async Task<DomainResult> ResultFromExecutionInTransaction(
         this IUnitOfWork unitOfWork, Func<Task> operation)
     {
         try
         {
             await operation();
             await unitOfWork.SaveChangesAsync();
-            return OperationResult.Success;
+            return DomainResult.Success();
         }
         catch (Exception e)
         {
-            return OperationResult.Failed(e.Message);
+            return DomainResult.Failure(new("Exception.Error", e.Message));
         }
     }
 }
